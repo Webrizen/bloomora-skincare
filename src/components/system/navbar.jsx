@@ -18,119 +18,12 @@ import {
     SheetTrigger,
 } from "@/components/ui/sheet";
 import { Search, User, ShoppingBag } from 'lucide-react';
+import { collections, ingredients, productTypes, skinConcerns } from '@/enums';
 
 const Navbar = () => {
     const [navIsOpened, setNavIsOpened] = useState(false)
 
     const closeNavbar = () => setNavIsOpened(false);
-
-    const productTypes = [
-        {
-            name: "Cleansing Rituals",
-            items: ["Luxury Facial Cleansers", "Makeup Melting Balms", "Gentle Exfoliating Wash", "Purifying Detox Formulas"],
-            description: "Elevate your daily cleansing ceremony",
-            image: "https://placehold.co/600x400"
-        },
-        {
-            name: "Hydration Elixirs",
-            items: ["Luxury Face Creams", "Revitalizing Serums", "Overnight Renewal", "24-Hour Moisture Lock"],
-            description: "Advanced hydration for radiant complexion",
-            image: "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=300&h=200&fit=crop"
-        },
-        {
-            name: "Treatment Concentrates",
-            items: ["Targeted Serums", "Potent Actives", "Professional-Grade Formulas", "Corrective Solutions"],
-            description: "Clinical-grade solutions for visible results",
-            image: "https://placehold.co/600x400"
-        },
-        {
-            name: "Toning Essences",
-            items: ["Hydrating Mists", "pH-Balancing Toners", "Treatment Essences", "Prep & Prime Solutions"],
-            description: "Perfect skin preparation and finishing",
-            image: "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=300&h=200&fit=crop"
-        },
-        {
-            name: "Solar Protection",
-            items: ["Daily Defense SPF", "Age-Defying Sun Care", "Invisible Protection", "Environmental Shield"],
-            description: "Ultimate protection against aging and damage",
-            image: "https://placehold.co/600x400"
-        },
-        {
-            name: "Intensive Therapies",
-            items: ["Renewing Face Masks", "Instant Revival Sheets", "Overnight Treatments", "Targeted Eye Therapy"],
-            description: "Spa-grade treatments for transformative results",
-            image: "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=300&h=200&fit=crop"
-        }
-    ]
-
-    const skinConcerns = [
-        {
-            name: "Clarity & Blemish Control",
-            description: "Targeted solutions for clear, balanced skin",
-            image: "https://placehold.co/600x400"
-        },
-        {
-            name: "Age-Defying Innovation",
-            description: "Advanced technology for timeless beauty",
-            image: "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=200&h=150&fit=crop"
-        },
-        {
-            name: "Luminosity Revival",
-            description: "Illuminate and restore your natural radiance",
-            image: "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=200&h=150&fit=crop"
-        },
-        {
-            name: "Intensive Hydration",
-            description: "Quench and replenish for dewy vitality",
-            image: "https://placehold.co/600x400"
-        }
-    ]
-
-    const ingredients = [
-        {
-            name: "Niacinamide Complex",
-            description: "Multi-correction for pores and brightness",
-            image: "https://placehold.co/600x400"
-        },
-        {
-            name: "Vitamin C Antioxidants",
-            description: "Ultimate protection and radiance boost",
-            image: "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=150&h=150&fit=crop"
-        },
-        {
-            name: "Hyaluronic Hydration",
-            description: "Multi-level moisture infusion",
-            image: "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=150&h=150&fit=crop"
-        },
-        {
-            name: "AHA/BHA Clarifying",
-            description: "Professional-level resurfacing",
-            image: "https://placehold.co/600x400"
-        }
-    ]
-
-    const collections = [
-        {
-            name: "Signature Collection",
-            description: "Our most beloved formulations",
-            image: "https://placehold.co/600x400"
-        },
-        {
-            name: "New Innovations",
-            description: "Latest breakthroughs in skincare science",
-            image: "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=250&h=150&fit=crop"
-        },
-        {
-            name: "Curated Rituals",
-            description: "Expertly paired regimens for optimal results",
-            image: "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=250&h=150&fit=crop"
-        },
-        {
-            name: "Pure & Conscious",
-            description: "Clean, sustainable luxury",
-            image: "https://placehold.co/600x400"
-        }
-    ]
 
     return (
         <>
@@ -175,8 +68,8 @@ const Navbar = () => {
                                     <NavigationMenuTrigger className="text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white px-4 py-2 data-[state=open]:text-zinc-900 data-[state=open]:dark:text-white transition-colors duration-200">
                                         Skincare Collections
                                     </NavigationMenuTrigger>
-                                    <NavigationMenuContent className="!w-[900px] p-6">
-                                        <div className="grid grid-cols-2 gap-6">
+                                    <NavigationMenuContent className="!w-[800px] p-4">
+                                        <div className="grid grid-cols-2 gap-2">
                                             {productTypes.map((category) => (
                                                 <Link
                                                     key={category.name}
@@ -193,7 +86,7 @@ const Navbar = () => {
                                                         </div>
                                                     </div>
                                                     <div className="flex-1">
-                                                        <h4 className="font-semibold text-zinc-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors mb-2">
+                                                        <h4 className="font-semibold text-zinc-900 dark:text-white group-hover:text-accent-foreground dark:group-hover:text-accent-foreground transition-colors mb-2">
                                                             {category.name}
                                                         </h4>
                                                         <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-3 leading-relaxed">
@@ -217,7 +110,7 @@ const Navbar = () => {
                                     <NavigationMenuTrigger className="text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white px-4 py-2 data-[state=open]:text-zinc-900 data-[state=open]:dark:text-white transition-colors duration-200">
                                         Skin Solutions
                                     </NavigationMenuTrigger>
-                                    <NavigationMenuContent className="!w-[700px] p-6">
+                                    <NavigationMenuContent className="!w-[800px] p-6">
                                         <div className="grid grid-cols-2 gap-4">
                                             {skinConcerns.map((concern) => (
                                                 <Link
@@ -234,7 +127,7 @@ const Navbar = () => {
                                                         <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors" />
                                                     </div>
                                                     <div className="p-4">
-                                                        <h4 className="font-semibold text-zinc-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors mb-2">
+                                                        <h4 className="font-semibold text-zinc-900 dark:text-white group-hover:text-accent-foreground dark:group-hover:text-accent-foreground transition-colors mb-2">
                                                             {concern.name}
                                                         </h4>
                                                         <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
@@ -251,7 +144,7 @@ const Navbar = () => {
                                     <NavigationMenuTrigger className="text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white px-4 py-2 data-[state=open]:text-zinc-900 data-[state=open]:dark:text-white transition-colors duration-200">
                                         Active Innovations
                                     </NavigationMenuTrigger>
-                                    <NavigationMenuContent className="!w-[600px] p-6">
+                                    <NavigationMenuContent className="!w-[800px] p-6">
                                         <div className="grid grid-cols-2 gap-4">
                                             {ingredients.map((ingredient) => (
                                                 <Link
@@ -260,7 +153,7 @@ const Navbar = () => {
                                                     className="group flex items-center gap-4 p-4 rounded-xl hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-all duration-200 border border-transparent hover:border-zinc-200 dark:hover:border-zinc-700"
                                                 >
                                                     <div className="flex-shrink-0">
-                                                        <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-zinc-200 dark:border-zinc-700 group-hover:border-indigo-300 dark:group-hover:border-indigo-600 transition-colors">
+                                                        <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-zinc-200 dark:border-zinc-700 group-hover:border-accent-foreground dark:group-hover:border-accent-foreground transition-colors">
                                                             <img
                                                                 src={ingredient.image || 'https://placehold.co/150x150'}
                                                                 alt={ingredient.name}
@@ -269,7 +162,7 @@ const Navbar = () => {
                                                         </div>
                                                     </div>
                                                     <div className="flex-1">
-                                                        <h4 className="font-semibold text-zinc-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors mb-1">
+                                                        <h4 className="font-semibold text-zinc-900 dark:text-white group-hover:text-accent-foreground dark:group-hover:text-accent-foreground transition-colors mb-1">
                                                             {ingredient.name}
                                                         </h4>
                                                         <p className="text-sm text-zinc-600 dark:text-zinc-400">
@@ -286,8 +179,8 @@ const Navbar = () => {
                                     <NavigationMenuTrigger className="text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white px-4 py-2 data-[state=open]:text-zinc-900 data-[state=open]:dark:text-white transition-colors duration-200">
                                         Our World
                                     </NavigationMenuTrigger>
-                                    <NavigationMenuContent className="!w-[500px] p-6">
-                                        <div className="grid gap-4">
+                                    <NavigationMenuContent className="!w-[800px] p-6">
+                                        <div className="grid grid-cols-2 gap-4">
                                             {collections.map((collection) => (
                                                 <Link
                                                     key={collection.name}
@@ -332,7 +225,7 @@ const Navbar = () => {
 
                         <button className="relative size-10 flex justify-center items-center hover:bg-accent-foreground/5 cursor-pointer rounded-xl text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors duration-200">
                             <ShoppingBag size={20} />
-                            <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-indigo-600 text-xs font-medium text-white">
+                            <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-accent-foreground text-xs font-medium text-white">
                                 0
                             </span>
                         </button>
