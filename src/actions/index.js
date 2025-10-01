@@ -1,17 +1,20 @@
 import client from "@/lib/sanity";
 
 export async function getAllProducts() {
-  const query = `*[_type == "blog"] | order(publishedAt desc) {
+  const query = `*[_type == "products"] | order(publishedAt desc) {
      _id,
     title,
     description,
     slug,
+    price,
     publishedAt,
+    quantity,
+    quantityLeft,
     keyIngredients,
     benefits,
-    coverImage,
-    "coverImageUrl": coverImage.asset->url,
-    "coverImageMetadata": coverImage.asset->metadata {
+    mainImage,
+    "coverImageUrl": mainImage.asset->url,
+    "coverImageMetadata": mainImage.asset->metadata {
       dimensions,
       lqip
     },
@@ -22,11 +25,14 @@ export async function getAllProducts() {
 }
 
 export async function getProductBySlug(slug) {
-    const query = `*[_type == "products" && slug.current == $slug][0] {
+  const query = `*[_type == "products" && slug.current == $slug][0] {
         _id,
         title,
         description,
         slug,
+        price,
+        quantity,
+    quantityLeft,
         mainImage,
         "mainImageUrl": mainImage.asset->url,
         "mainImageMetadata": mainImage.asset->metadata {
@@ -40,17 +46,17 @@ export async function getProductBySlug(slug) {
         publishedAt,
 }`
 
-   return await client.fetch(query, { slug })
+  return await client.fetch(query, { slug })
 }
 
-export async function getAllProductsNavigationInfo(){
-     const query = `*[_type == "blog"] | order(publishedAt desc) {
+export async function getAllProductsNavigationInfo() {
+  const query = `*[_type == "products"] | order(publishedAt desc) {
      _id,
     title,
     description,
     slug,
-    "coverImageUrl": coverImage.asset->url,
-    "coverImageMetadata": coverImage.asset->metadata {
+    "coverImageUrl": mainImage.asset->url,
+    "coverImageMetadata": mainImage.asset->metadata {
       dimensions,
       lqip
     },

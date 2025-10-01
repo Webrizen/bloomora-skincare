@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import Logo from "@/assets/logo.png";
@@ -18,12 +18,70 @@ import {
     SheetTrigger,
 } from "@/components/ui/sheet";
 import { Search, User, ShoppingBag } from 'lucide-react';
-import { collections, ingredients, productTypes, skinConcerns } from '@/enums';
+import { getAllProductsNavigationInfo } from '@/actions';
 
 const Navbar = () => {
-    const [navIsOpened, setNavIsOpened] = useState(false)
+    const [navIsOpened, setNavIsOpened] = useState(false);
+    const [products, setProducts] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                setIsLoading(true);
+                const data = await getAllProductsNavigationInfo();
+                setProducts(Array.isArray(data) ? data : []);
+            } catch (error) {
+                console.error('Error fetching products:', error);
+                setProducts([]);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchProducts();
+    }, []);
 
     const closeNavbar = () => setNavIsOpened(false);
+
+    // Group products by first letter for the menu (you might want to group by category instead)
+    const productGroups = products.reduce((groups, product) => {
+        if (!product?.title) return groups;
+
+        const firstLetter = product.title.charAt(0).toUpperCase();
+        if (!groups[firstLetter]) {
+            groups[firstLetter] = [];
+        }
+        groups[firstLetter].push(product);
+        return groups;
+    }, {});
+
+    const renderProductSkeleton = (count = 6) => {
+        return Array.from({ length: count }).map((_, index) => (
+            <div key={index} className="group flex gap-4 p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 animate-pulse">
+                <div className="flex-shrink-0">
+                    <div className="w-20 h-20 rounded-lg bg-zinc-300 dark:bg-zinc-700" />
+                </div>
+                <div className="flex-1 space-y-2">
+                    <div className="h-4 bg-zinc-300 dark:bg-zinc-700 rounded w-3/4" />
+                    <div className="h-3 bg-zinc-300 dark:bg-zinc-700 rounded w-full" />
+                    <div className="h-3 bg-zinc-300 dark:bg-zinc-700 rounded w-5/6" />
+                </div>
+            </div>
+        ));
+    };
+
+    const renderMobileProductSkeleton = (count = 4) => {
+        return Array.from({ length: count }).map((_, index) => (
+            <div key={index} className="flex gap-3 p-3 rounded-lg border border-zinc-200 dark:border-zinc-800 animate-pulse">
+                <div className="w-12 h-12 rounded-lg bg-zinc-300 dark:bg-zinc-700" />
+                <div className="flex-1 space-y-2">
+                    <div className="h-4 bg-zinc-300 dark:bg-zinc-700 rounded w-1/2" />
+                    <div className="h-3 bg-zinc-300 dark:bg-zinc-700 rounded w-3/4" />
+                </div>
+            </div>
+        ));
+    };
 
     return (
         <>
@@ -66,100 +124,162 @@ const Navbar = () => {
 
                                 <NavigationMenuItem>
                                     <NavigationMenuTrigger className="text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white px-4 py-2 data-[state=open]:text-zinc-900 data-[state=open]:dark:text-white transition-colors duration-200">
-                                        Skincare Collections
+                                        Our Products
                                     </NavigationMenuTrigger>
                                     <NavigationMenuContent className="!w-[800px] p-4">
-                                        <div className="grid grid-cols-2 gap-2">
-                                            {productTypes.map((category) => (
-                                                <Link
-                                                    key={category.name}
-                                                    href="#"
-                                                    className="group flex gap-4 p-4 rounded-xl hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-all duration-200 border border-transparent hover:border-zinc-200 dark:hover:border-zinc-700"
-                                                >
-                                                    <div className="flex-shrink-0">
-                                                        <div className="w-20 h-20 rounded-lg overflow-hidden">
-                                                            <img
-                                                                src={category.image || 'https://placehold.co/600x400'}
-                                                                alt={category.name}
-                                                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                                                            />
+                                        {isLoading ? (
+                                            <div className="grid grid-cols-2 gap-2">
+                                                {renderProductSkeleton()}
+                                            </div>
+                                        ) : products.length > 0 ? (
+                                            <div className="grid grid-cols-2 gap-2">
+                                                {products.slice(0, 6).map((product) => (
+                                                    <Link
+                                                        key={product._id}
+                                                        href={`/products/${product.slug?.current || '#'}`}
+                                                        className="group flex gap-4 p-4 rounded-xl hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-all duration-200 border border-transparent hover:border-zinc-200 dark:hover:border-zinc-700"
+                                                    >
+                                                        <div className="flex-shrink-0">
+                                                            <div className="w-20 h-20 rounded-lg overflow-hidden bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center">
+                                                                {product.coverImageUrl ? (
+                                                                    <Image
+                                                                        src={product.coverImageUrl}
+                                                                        alt={product.title}
+                                                                        width={500}
+                                                                        placeholder='blur'
+                                                                        blurDataURL={product.coverImageMetadata?.lqip || ''}
+                                                                        height={500}
+                                                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                                                    />
+                                                                ) : (
+                                                                    <div className="text-zinc-400 text-xs text-center p-2">
+                                                                        No Image
+                                                                    </div>
+                                                                )}
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <div className="flex-1">
-                                                        <h4 className="font-semibold text-zinc-900 dark:text-white group-hover:text-accent-foreground dark:group-hover:text-accent-foreground transition-colors mb-2">
-                                                            {category.name}
-                                                        </h4>
-                                                        <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-3 leading-relaxed">
-                                                            {category.description}
-                                                        </p>
-                                                        <div className="flex flex-wrap gap-1">
-                                                            {category.items.slice(0, 2).map((item) => (
-                                                                <span key={item} className="text-xs text-zinc-500 dark:text-zinc-500 bg-zinc-100 dark:bg-zinc-800 px-2 py-1 rounded-md">
-                                                                    {item}
+                                                        <div className="flex-1">
+                                                            <h4 className="font-semibold text-zinc-900 dark:text-white group-hover:text-accent-foreground dark:group-hover:text-accent-foreground transition-colors mb-2">
+                                                                {product.title || 'Untitled Product'}
+                                                            </h4>
+                                                            <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-3 leading-relaxed line-clamp-2">
+                                                                {product.description || 'Discover this premium skincare solution.'}
+                                                            </p>
+                                                            <div className="flex items-center">
+                                                                <span className="text-xs text-accent-foreground font-medium bg-accent-foreground/10 px-2 py-1 rounded-md">
+                                                                    Shop Now
                                                                 </span>
-                                                            ))}
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                </Link>
-                                            ))}
-                                        </div>
+                                                    </Link>
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            <div className="text-center py-8">
+                                                <p className="text-zinc-500 dark:text-zinc-400">
+                                                    No products available at the moment.
+                                                </p>
+                                            </div>
+                                        )}
                                     </NavigationMenuContent>
                                 </NavigationMenuItem>
 
                                 <NavigationMenuItem>
                                     <NavigationMenuTrigger className="text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white px-4 py-2 data-[state=open]:text-zinc-900 data-[state=open]:dark:text-white transition-colors duration-200">
-                                        Skin Solutions
+                                        Shop By Concern
                                     </NavigationMenuTrigger>
                                     <NavigationMenuContent className="!w-[800px] p-6">
-                                        <div className="grid grid-cols-2 gap-4">
-                                            {skinConcerns.map((concern) => (
+                                        <div className="space-y-4">
+                                            <div className="grid grid-cols-2 gap-4">
                                                 <Link
-                                                    key={concern.name}
-                                                    href="#"
+                                                    href="/concerns/anti-aging"
                                                     className="group block rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300 border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-600"
                                                 >
-                                                    <div className="relative h-32 overflow-hidden">
-                                                        <img
-                                                            src={concern.image || 'https://placehold.co/600x400'}
-                                                            alt={concern.name}
-                                                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                                                        />
+                                                    <div className="relative h-32 overflow-hidden bg-accent-foreground">
                                                         <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors" />
+                                                        <div className="absolute inset-0 flex items-center justify-center">
+                                                            <h4 className="font-semibold text-white text-lg group-hover:scale-105 transition-transform">
+                                                                Anti-Aging
+                                                            </h4>
+                                                        </div>
                                                     </div>
                                                     <div className="p-4">
-                                                        <h4 className="font-semibold text-zinc-900 dark:text-white group-hover:text-accent-foreground dark:group-hover:text-accent-foreground transition-colors mb-2">
-                                                            {concern.name}
-                                                        </h4>
-                                                        <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                                                            {concern.description}
+                                                        <p className="text-sm text-zinc-600 dark:text-zinc-400 text-center">
+                                                            Target fine lines and wrinkles with our advanced formulations
                                                         </p>
                                                     </div>
                                                 </Link>
-                                            ))}
+                                                <Link
+                                                    href="/concerns/hydration"
+                                                    className="group block rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300 border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-600"
+                                                >
+                                                    <div className="relative h-32 overflow-hidden bg-accent">
+                                                        <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors" />
+                                                        <div className="absolute inset-0 flex items-center justify-center">
+                                                            <h4 className="font-semibold text-white text-lg group-hover:scale-105 transition-transform">
+                                                                Deep Hydration
+                                                            </h4>
+                                                        </div>
+                                                    </div>
+                                                    <div className="p-4">
+                                                        <p className="text-sm text-zinc-600 dark:text-zinc-400 text-center">
+                                                            Replenish moisture for supple, radiant skin
+                                                        </p>
+                                                    </div>
+                                                </Link>
+                                            </div>
+                                            <div className="grid grid-cols-3 gap-3">
+                                                {['Brightening', 'Acne Care', 'Sensitive Skin'].map((concern) => (
+                                                    <Link
+                                                        key={concern}
+                                                        href={`/concerns/${concern.toLowerCase().replace(' ', '-')}`}
+                                                        className="group text-center p-4 rounded-lg hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors border border-transparent hover:border-zinc-200 dark:hover:border-zinc-700"
+                                                    >
+                                                        <h4 className="font-medium text-zinc-900 dark:text-white group-hover:text-accent-foreground transition-colors">
+                                                            {concern}
+                                                        </h4>
+                                                    </Link>
+                                                ))}
+                                            </div>
                                         </div>
                                     </NavigationMenuContent>
                                 </NavigationMenuItem>
 
                                 <NavigationMenuItem>
                                     <NavigationMenuTrigger className="text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white px-4 py-2 data-[state=open]:text-zinc-900 data-[state=open]:dark:text-white transition-colors duration-200">
-                                        Active Innovations
+                                        Ingredients
                                     </NavigationMenuTrigger>
                                     <NavigationMenuContent className="!w-[800px] p-6">
                                         <div className="grid grid-cols-2 gap-4">
-                                            {ingredients.map((ingredient) => (
+                                            {[
+                                                {
+                                                    name: 'Vitamin C',
+                                                    description: 'Powerful antioxidant for brightening and protection',
+                                                    color: 'from-orange-400 to-yellow-400'
+                                                },
+                                                {
+                                                    name: 'Hyaluronic Acid',
+                                                    description: 'Intense hydration and moisture retention',
+                                                    color: 'from-blue-400 to-purple-400'
+                                                },
+                                                {
+                                                    name: 'Natural Clays',
+                                                    description: 'Detoxifying and purifying properties',
+                                                    color: 'from-amber-400 to-brown-400'
+                                                },
+                                                {
+                                                    name: 'Botanical Extracts',
+                                                    description: 'Gentle, natural solutions for sensitive skin',
+                                                    color: 'from-green-400 to-emerald-400'
+                                                }
+                                            ].map((ingredient) => (
                                                 <Link
                                                     key={ingredient.name}
-                                                    href="#"
+                                                    href={`/ingredients/${ingredient.name.toLowerCase().replace(' ', '-')}`}
                                                     className="group flex items-center gap-4 p-4 rounded-xl hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-all duration-200 border border-transparent hover:border-zinc-200 dark:hover:border-zinc-700"
                                                 >
                                                     <div className="flex-shrink-0">
-                                                        <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-zinc-200 dark:border-zinc-700 group-hover:border-accent-foreground dark:group-hover:border-accent-foreground transition-colors">
-                                                            <img
-                                                                src={ingredient.image || 'https://placehold.co/150x150'}
-                                                                alt={ingredient.name}
-                                                                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                                                            />
-                                                        </div>
+                                                        <div className={`w-16 h-16 rounded-full bg-gradient-to-br ${ingredient.color} group-hover:scale-110 transition-transform duration-300`} />
                                                     </div>
                                                     <div className="flex-1">
                                                         <h4 className="font-semibold text-zinc-900 dark:text-white group-hover:text-accent-foreground dark:group-hover:text-accent-foreground transition-colors mb-1">
@@ -175,41 +295,12 @@ const Navbar = () => {
                                     </NavigationMenuContent>
                                 </NavigationMenuItem>
 
-                                <NavigationMenuItem>
-                                    <NavigationMenuTrigger className="text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white px-4 py-2 data-[state=open]:text-zinc-900 data-[state=open]:dark:text-white transition-colors duration-200">
-                                        Our World
-                                    </NavigationMenuTrigger>
-                                    <NavigationMenuContent className="!w-[800px] p-6">
-                                        <div className="grid grid-cols-2 gap-4">
-                                            {collections.map((collection) => (
-                                                <Link
-                                                    key={collection.name}
-                                                    href="#"
-                                                    className="group block rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300 border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-600"
-                                                >
-                                                    <div className="relative h-24 overflow-hidden">
-                                                        <img
-                                                            src={collection.image || 'https://placehold.co/600x400'}
-                                                            alt={collection.name}
-                                                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                                                        />
-                                                        <div className="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition-colors" />
-                                                        <div className="absolute inset-0 flex items-center justify-center">
-                                                            <h4 className="font-semibold text-white text-lg group-hover:scale-105 transition-transform">
-                                                                {collection.name}
-                                                            </h4>
-                                                        </div>
-                                                    </div>
-                                                    <div className="p-4">
-                                                        <p className="text-sm text-zinc-600 dark:text-zinc-400 text-center">
-                                                            {collection.description}
-                                                        </p>
-                                                    </div>
-                                                </Link>
-                                            ))}
-                                        </div>
-                                    </NavigationMenuContent>
-                                </NavigationMenuItem>
+                                <Link
+                                    href="/about"
+                                    className="text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white px-4 py-2 transition-colors duration-200"
+                                >
+                                    Our Story
+                                </Link>
                             </NavigationMenuList>
                         </NavigationMenu>
                     </div>
@@ -261,31 +352,65 @@ const Navbar = () => {
                                         <div className="space-y-8 px-6">
                                             <div>
                                                 <h3 className="text-sm font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-4">
-                                                    Skincare Collections
+                                                    Our Products
                                                 </h3>
                                                 <div className="space-y-4">
-                                                    {productTypes.map((category) => (
+                                                    {isLoading ? (
+                                                        renderMobileProductSkeleton()
+                                                    ) : products.length > 0 ? (
+                                                        products.slice(0, 4).map((product) => (
+                                                            <Link
+                                                                key={product._id}
+                                                                href={`/products/${product.slug?.current || '#'}`}
+                                                                className="flex gap-3 p-3 rounded-lg hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors border border-transparent hover:border-zinc-200 dark:hover:border-zinc-700"
+                                                                onClick={closeNavbar}
+                                                            >
+                                                                <div className="flex-shrink-0">
+                                                                    <div className="w-12 h-12 rounded-lg overflow-hidden bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center">
+                                                                        {product.coverImageUrl ? (
+                                                                            <img
+                                                                                src={product.coverImageUrl}
+                                                                                alt={product.title}
+                                                                                className="w-full h-full object-cover"
+                                                                            />
+                                                                        ) : (
+                                                                            <div className="text-zinc-400 text-xs text-center">
+                                                                                No Image
+                                                                            </div>
+                                                                        )}
+                                                                    </div>
+                                                                </div>
+                                                                <div>
+                                                                    <div className="font-medium text-zinc-900 dark:text-white">
+                                                                        {product.title || 'Untitled Product'}
+                                                                    </div>
+                                                                    <div className="text-sm text-zinc-500 dark:text-zinc-400 mt-1 line-clamp-2">
+                                                                        {product.description || 'Discover this premium skincare solution.'}
+                                                                    </div>
+                                                                </div>
+                                                            </Link>
+                                                        ))
+                                                    ) : (
+                                                        <p className="text-zinc-500 dark:text-zinc-400 text-center py-4">
+                                                            No products available
+                                                        </p>
+                                                    )}
+                                                </div>
+                                            </div>
+
+                                            <div>
+                                                <h3 className="text-sm font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-4">
+                                                    Skin Concerns
+                                                </h3>
+                                                <div className="space-y-3">
+                                                    {['Anti-Aging', 'Hydration', 'Brightening', 'Acne Care', 'Sensitive Skin'].map((concern) => (
                                                         <Link
-                                                            key={category.name}
-                                                            href="#"
-                                                            className="flex gap-3 p-3 rounded-lg hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors border border-transparent hover:border-zinc-200 dark:hover:border-zinc-700"
+                                                            key={concern}
+                                                            href={`/concerns/${concern.toLowerCase().replace(' ', '-')}`}
+                                                            className="block py-3 px-4 rounded-lg border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-600 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors text-zinc-700 dark:text-zinc-300"
                                                             onClick={closeNavbar}
                                                         >
-                                                            <div className="flex-shrink-0">
-                                                                <div className="w-12 h-12 rounded-lg overflow-hidden">
-                                                                    <img
-                                                                        src={category.image}
-                                                                        alt={category.name}
-                                                                        className="w-full h-full object-cover"
-                                                                    />
-                                                                </div>
-                                                            </div>
-                                                            <div>
-                                                                <div className="font-medium text-zinc-900 dark:text-white">{category.name}</div>
-                                                                <div className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">
-                                                                    {category.description}
-                                                                </div>
-                                                            </div>
+                                                            {concern}
                                                         </Link>
                                                     ))}
                                                 </div>
@@ -293,29 +418,23 @@ const Navbar = () => {
 
                                             <div>
                                                 <h3 className="text-sm font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-4">
-                                                    Skin Solutions
+                                                    Discover
                                                 </h3>
-                                                <div className="space-y-4">
-                                                    {skinConcerns.map((concern) => (
-                                                        <Link
-                                                            key={concern.name}
-                                                            href="#"
-                                                            className="block rounded-lg overflow-hidden border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-600 transition-colors"
-                                                            onClick={closeNavbar}
-                                                        >
-                                                            <div className="h-20 relative">
-                                                                <img
-                                                                    src={concern.image}
-                                                                    alt={concern.name}
-                                                                    className="w-full h-full object-cover"
-                                                                />
-                                                                <div className="absolute inset-0 bg-black/20" />
-                                                                <div className="absolute inset-0 flex items-center p-4">
-                                                                    <div className="font-medium text-white">{concern.name}</div>
-                                                                </div>
-                                                            </div>
-                                                        </Link>
-                                                    ))}
+                                                <div className="space-y-3">
+                                                    <Link
+                                                        href="/ingredients"
+                                                        className="block py-3 px-4 rounded-lg border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-600 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors text-zinc-700 dark:text-zinc-300"
+                                                        onClick={closeNavbar}
+                                                    >
+                                                        Our Ingredients
+                                                    </Link>
+                                                    <Link
+                                                        href="/about"
+                                                        className="block py-3 px-4 rounded-lg border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-600 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors text-zinc-700 dark:text-zinc-300"
+                                                        onClick={closeNavbar}
+                                                    >
+                                                        Our Story
+                                                    </Link>
                                                 </div>
                                             </div>
                                         </div>
@@ -324,14 +443,14 @@ const Navbar = () => {
                                     <div className="p-6 border-t border-zinc-200/80 dark:border-zinc-800/80">
                                         <div className="space-y-4">
                                             <Link
-                                                href="#"
+                                                href="/account"
                                                 className="block w-full text-center py-3 border border-zinc-300 dark:border-zinc-700 rounded-lg text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors"
                                                 onClick={closeNavbar}
                                             >
-                                                Account
+                                                My Account
                                             </Link>
                                             <Link
-                                                href="#"
+                                                href="/products"
                                                 className="block w-full text-center py-3 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-lg hover:bg-zinc-800 dark:hover:bg-zinc-100 transition-colors font-medium"
                                                 onClick={closeNavbar}
                                             >

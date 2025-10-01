@@ -21,6 +21,27 @@ export const productsType = defineType({
       validation: Rule => Rule.max(300),
     }),
     defineField({
+      name: 'price',
+      title: 'Price (in USD)',
+      type: 'number',
+      validation: Rule => Rule.required().min(0),
+      default: 134,
+    }),
+    defineField({
+      name: 'quantity',
+      title: 'Quantity',
+      type: 'number',
+      validation: Rule => Rule.required().min(0),
+      default: 1,
+    }),
+    defineField({
+      name: 'QuantityLeft',
+      title: 'Quantity Left',
+      type: 'number',
+      validation: Rule => Rule.required().min(0),
+      default: 10,
+    }),
+    defineField({
       name: 'slug',
       title: 'Slug',
       type: 'slug',
