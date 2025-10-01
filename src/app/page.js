@@ -4,6 +4,7 @@ import {
   CarouselContent,
   CarouselItem
 } from "@/components/ui/carousel";
+import { TextAnimate } from "@/components/ui/text-animate";
 import { benefits, features, heroProducts } from "@/enums";
 import Autoplay from "embla-carousel-autoplay";
 import { ArrowRight, Heart, Share2, ShoppingBag, Star, CheckCircle } from 'lucide-react';
@@ -51,54 +52,52 @@ export default function Home() {
                     <div className="max-w-2xl">
                       {/* Badge */}
                       <div className="inline-flex items-center px-4 py-2 rounded-full bg-white/20 dark:bg-zinc-800/20 backdrop-blur-sm border border-white/30 dark:border-zinc-600/30 mb-6">
-                        <span className="text-sm font-medium text-white">
+                        <TextAnimate animation="blurInUp" className="text-sm font-medium text-white">
                           {product.badge}
-                        </span>
+                        </TextAnimate>
                       </div>
 
                       {/* Title & Subtitle */}
-                      <h1 className="text-5xl lg:text-7xl font-light text-white mb-4 leading-tight">
+                      <TextAnimate animation="blurIn" as="h1" className="text-5xl lg:text-7xl font-light text-white mb-4 leading-tight">
                         {product.title}
-                      </h1>
-                      <h2 className="text-xl lg:text-2xl text-zinc-200 mb-6 font-light">
+                      </TextAnimate>
+                      <TextAnimate animation="blurIn" as="h2" className="text-xl lg:text-2xl text-zinc-200 mb-6 font-light">
                         {product.subtitle}
-                      </h2>
+                      </TextAnimate>
 
                       {/* Description */}
-                      <p className="text-lg text-zinc-300 mb-8 max-w-xl leading-relaxed">
+                      <TextAnimate animation="blurIn" as="p" className="text-lg text-zinc-300 mb-8 max-w-xl leading-relaxed">
                         {product.description}
-                      </p>
+                      </TextAnimate>
 
                       {/* Features */}
                       <div className="grid grid-cols-2 gap-3 mb-8 max-w-md">
                         {product.features.map((feature, index) => (
                           <div key={index} className="flex items-center gap-2">
-                            <div className="w-1.5 h-1.5 rounded-full bg-white" />
-                            <span className="text-sm text-zinc-300">{feature}</span>
+                            <TextAnimate animation="blurIn" as="span" className="text-sm text-zinc-300">{`•  ${feature}`}</TextAnimate>
                           </div>
                         ))}
                       </div>
 
                       {/* Price & CTA */}
                       <div className="flex items-center gap-6 mb-8">
-                        <div className="text-3xl font-light text-white">
+                        <TextAnimate animation="blurIn" className="text-3xl font-light text-white">
                           {product.price}
-                        </div>
-                        <button className="group cursor-pointer relative flex items-center gap-3 bg-white text-zinc-900 px-8 py-4 rounded-full font-medium hover:bg-zinc-100 transition-all duration-300 hover:scale-105">
+                        </TextAnimate>
+                        <TextAnimate as="button" animation="blurIn" className="group cursor-pointer relative bg-white text-zinc-900 px-8 py-4 rounded-full font-medium hover:bg-zinc-100 transition-all duration-300 hover:scale-105">
                           {product.cta}
-                          <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
-                        </button>
+                        </TextAnimate>
                       </div>
 
                       {/* Additional Actions */}
                       <div className="flex items-center gap-4">
                         <button className="flex items-center gap-2 text-zinc-300 hover:text-white transition-colors">
                           <Heart size={20} />
-                          <span className="text-sm">Add to Wishlist</span>
+                          <TextAnimate animation="blurInUp" className="text-sm">Add to Wishlist</TextAnimate>
                         </button>
                         <button className="flex items-center gap-2 text-zinc-300 hover:text-white transition-colors">
                           <Share2 size={20} />
-                          <span className="text-sm">Share</span>
+                          <TextAnimate animation="blurInUp" className="text-sm">Share</TextAnimate>
                         </button>
                       </div>
                     </div>
@@ -157,16 +156,23 @@ export default function Home() {
           {/* Header Section - Asymmetric */}
           <div className="grid grid-cols-1 gap-12 mb-20">
             <div className="relative w-full">
-              <h2 className="text-4xl lg:text-8xl text-zinc-900 dark:text-white">
-                Beyond Every Beauty, we care for your{"  "}
-                <span className="font-semibold bg-gradient-to-r from-accent to-accent/10 bg-clip-text text-transparent">
-                  Skincare
-                </span>.
-              </h2>
-              <p className="text-lg mt-20 text-zinc-600 dark:text-zinc-400 leading-relaxed max-w-md ml-auto">
+              <TextAnimate
+                as="h2"
+                animation="blurInUp"
+                by="word"
+                className="text-4xl lg:text-8xl text-zinc-900 dark:text-white"
+              >
+                Beyond Every Beauty, we care for you Skincare.
+              </TextAnimate>
+              <TextAnimate
+                as="p"
+                animation="slideUp"
+                delay={0.3}
+                className="text-lg mt-20 text-zinc-600 dark:text-zinc-400 leading-relaxed max-w-md ml-auto"
+              >
                 We believe skincare should be a transformative experience—combining cutting-edge science with
                 the healing power of nature to deliver visible, lasting results.
-              </p>
+              </TextAnimate>
             </div>
           </div>
 
@@ -190,9 +196,13 @@ export default function Home() {
                     {/* Floating Badge */}
                     <div className={`absolute top-6 ${feature.position === 'left' ? 'right-6' : 'left-6'} flex items-center gap-2 bg-white/90 dark:bg-zinc-800/90 backdrop-blur-sm px-4 py-2 rounded-full shadow-lg`}>
                       <div className={`w-2 h-2 rounded-full bg-accent-foreground`} />
-                      <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                      <TextAnimate
+                        animation="blurIn"
+                        delay={0.5}
+                        className="text-sm font-medium text-zinc-700 dark:text-zinc-300"
+                      >
                         {feature.stats}
-                      </span>
+                      </TextAnimate>
                     </div>
                   </div>
 
@@ -207,21 +217,40 @@ export default function Home() {
                     <div className={`p-3 rounded-2xl bg-accent-foreground shadow-lg`}>
                       <feature.icon size={24} className="text-white" />
                     </div>
-                    <span className="text-sm font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
-                      Feature {index + 1}
-                    </span>
+                    <TextAnimate
+                      animation="fadeIn"
+                      delay={0.2}
+                      className="text-sm font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider"
+                    >
+                      {`Feature ${index + 1}`}
+                    </TextAnimate>
                   </div>
 
-                  <h3 className="text-3xl lg:text-4xl font-semibold text-zinc-900 dark:text-white mb-6 leading-tight">
+                  <TextAnimate
+                    as="h3"
+                    animation="slideUp"
+                    by="word"
+                    delay={0.3}
+                    className="text-3xl lg:text-4xl font-semibold text-zinc-900 dark:text-white mb-6 leading-tight"
+                  >
                     {feature.title}
-                  </h3>
+                  </TextAnimate>
 
-                  <p className="text-lg text-zinc-600 dark:text-zinc-400 mb-8 leading-relaxed">
+                  <TextAnimate
+                    animation="slideUp"
+                    delay={0.5}
+                    className="text-lg text-zinc-600 dark:text-zinc-400 mb-8 leading-relaxed"
+                  >
                     {feature.description}
-                  </p>
+                  </TextAnimate>
 
                   <button className="group inline-flex items-center gap-2 text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white font-medium transition-colors">
-                    Learn more
+                    <TextAnimate
+                      animation="slideRight"
+                      delay={0.7}
+                    >
+                      Learn more
+                    </TextAnimate>
                     <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
                   </button>
                 </div>
@@ -233,14 +262,25 @@ export default function Home() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 mt-32">
             {/* Benefits List */}
             <div className="lg:col-span-2">
-              <h3 className="text-2xl md:text-6xl font-semibold text-zinc-900 dark:text-white mb-8">
+              <TextAnimate
+                as="h3"
+                animation="blurInUp"
+                by="word"
+                className="text-2xl md:text-6xl font-semibold text-zinc-900 dark:text-white mb-8"
+              >
                 Our Commitment to Excellence.
-              </h3>
+              </TextAnimate>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {benefits.map((benefit, index) => (
                   <div key={index} className="flex items-center gap-3 p-4 rounded-2xl bg-white/50 dark:bg-zinc-800/50 backdrop-blur-sm border border-zinc-200 dark:border-zinc-700">
                     <CheckCircle size={20} className="text-accent-foreground flex-shrink-0" />
-                    <span className="text-zinc-700 dark:text-zinc-300">{benefit}</span>
+                    <TextAnimate
+                      animation="slideRight"
+                      delay={0.1 * index}
+                      className="text-zinc-700 dark:text-zinc-300"
+                    >
+                      {benefit}
+                    </TextAnimate>
                   </div>
                 ))}
               </div>
@@ -252,27 +292,69 @@ export default function Home() {
                 <div className="text-center">
                   <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm mb-6">
                     <Star size={16} className="fill-yellow-400 text-yellow-400" />
-                    <span className="text-sm font-medium">Customer Loved</span>
+                    <TextAnimate
+                      animation="fadeIn"
+                      delay={0.2}
+                      className="text-sm font-medium"
+                    >
+                      Customer Loved
+                    </TextAnimate>
                   </div>
 
                   <div className="space-y-6">
                     <div>
-                      <div className="text-4xl font-bold mb-2">4.9/5</div>
-                      <div className="text-zinc-300">Average Rating</div>
+                      <TextAnimate
+                        animation="scaleUp"
+                        delay={0.3}
+                        className="text-4xl font-bold mb-2"
+                      >
+                        4.9/5
+                      </TextAnimate>
+                      <TextAnimate
+                        animation="fadeIn"
+                        delay={0.4}
+                        className="text-zinc-300"
+                      >
+                        Average Rating
+                      </TextAnimate>
                     </div>
 
                     <div className="h-px bg-white/20" />
 
                     <div>
-                      <div className="text-4xl font-bold mb-2">50K+</div>
-                      <div className="text-zinc-300">Happy Customers</div>
+                      <TextAnimate
+                        animation="scaleUp"
+                        delay={0.5}
+                        className="text-4xl font-bold mb-2"
+                      >
+                        50K+
+                      </TextAnimate>
+                      <TextAnimate
+                        animation="fadeIn"
+                        delay={0.6}
+                        className="text-zinc-300"
+                      >
+                        Happy Customers
+                      </TextAnimate>
                     </div>
 
                     <div className="h-px bg-white/20" />
 
                     <div>
-                      <div className="text-4xl font-bold mb-2">97%</div>
-                      <div className="text-zinc-300">Would Recommend</div>
+                      <TextAnimate
+                        animation="scaleUp"
+                        delay={0.7}
+                        className="text-4xl font-bold mb-2"
+                      >
+                        97%
+                      </TextAnimate>
+                      <TextAnimate
+                        animation="fadeIn"
+                        delay={0.8}
+                        className="text-zinc-300"
+                      >
+                        Would Recommend
+                      </TextAnimate>
                     </div>
                   </div>
                 </div>
