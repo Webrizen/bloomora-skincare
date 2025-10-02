@@ -1,4 +1,4 @@
-import { Award, Leaf, Shield, Heart } from 'lucide-react';
+import { Award, Leaf, Shield, Heart, Share2, ShoppingBag, Star, CheckCircle, Recycle, Sprout, Clock } from 'lucide-react';
 
 export const heroProducts = [
     {
@@ -214,3 +214,68 @@ export const collections = [
         image: "https://placehold.co/600x400"
     }
 ]
+
+export const featuredIngredients = [
+    {
+        name: "Bakuchiol",
+        description: "A natural, plant-based alternative to retinol that smooths fine lines without irritation.",
+        benefit: "Anti-Aging & Soothing",
+        color: "from-amber-50 to-amber-100",
+        darkColor: "from-amber-900/20 to-amber-800/20",
+        icon: Sprout,
+    },
+    {
+        name: "Hyaluronic Acid",
+        description: "Draws moisture deep into the skin for a plump, dewy, and hydrated complexion.",
+        benefit: "Intense Hydration",
+        color: "from-blue-50 to-cyan-50",
+        darkColor: "from-blue-900/20 to-cyan-900/20",
+        icon: Shield,
+    },
+    {
+        name: "Niacinamide",
+        description: "Visibly minimizes pores, improves skin tone, and strengthens the skin's barrier.",
+        benefit: "Pore Refining",
+        color: "from-purple-50 to-pink-50",
+        darkColor: "from-purple-900/20 to-pink-900/20",
+        icon: Award,
+    },
+];
+
+// Skincare Rituals
+export const skincareRituals = [
+    { step: 1, name: "Cleanse", description: "Gently purify with our nutrient-rich cream cleanser.", time: "AM & PM", icon: "☀️🌙" },
+    { step: 2, name: "Treat", description: "Target specific concerns with our potent serums.", time: "AM & PM", icon: "💧" },
+    { step: 3, name: "Moisturize", description: "Lock in hydration and nourish the skin barrier.", time: "AM & PM", icon: "🌿" },
+    { step: 4, name: "Protect", description: "Shield from UVA/UVB rays with our lightweight SPF.", time: "AM", icon: "🛡️" },
+];
+
+// Sustainability Promise
+export const sustainabilityFeatures = [
+    { icon: Recycle, text: "100% Recyclable Packaging" },
+    { icon: Leaf, text: "Ethically Sourced Ingredients" },
+    { icon: Sprout, text: "Carbon Neutral Shipping" },
+    { icon: Award, text: "Leaping Bunny Certified" },
+];
+
+// Testimonials
+export const testimonials = [
+    {
+        quote: "My skin has never felt so nourished and balanced. The Natural Renewal Serum is a game-changer.",
+        author: "Sarah M.",
+        role: "Verified Customer",
+        skinType: "Combination Skin"
+    },
+    {
+        quote: "Finally found a luxury brand that aligns with my values. Effective, transparent, and beautiful.",
+        author: "Jessica T.",
+        role: "Skincare Enthusiast",
+        skinType: "Sensitive Skin"
+    },
+    {
+        quote: "The glow is real! I've received so many compliments since switching to Bloomora.",
+        author: "Dr. Elena R.",
+        role: "Dermatologist",
+        skinType: "Mature Skin"
+    }
+];

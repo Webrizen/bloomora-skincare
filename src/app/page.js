@@ -7,13 +7,16 @@ import {
 } from "@/components/ui/carousel";
 import { TextAnimate } from "@/components/ui/text-animate";
 import Autoplay from "embla-carousel-autoplay";
-import { ArrowRight, Heart, Share2, ShoppingBag, Star, CheckCircle } from 'lucide-react';
+import { ArrowRight, Heart, Share2, ShoppingBag, Star, CheckCircle, Clock } from 'lucide-react';
 import { getAllProducts } from "@/actions";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { features, benefits, featuredIngredients, sustainabilityFeatures, skincareRituals, testimonials, skinConcerns } from "@/enums";
 
 export default function Home() {
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -31,46 +34,6 @@ export default function Home() {
     fetchProducts();
   }, []);
 
-  // Features data remains static as it's about company values
-  const features = [
-    {
-      id: 1,
-      title: "Science-Backed Formulas",
-      description: "Our products are developed with clinically proven ingredients and advanced biotechnology to deliver visible, lasting results for your skin.",
-      icon: Star,
-      position: 'left',
-      offset: 'lg:-translate-y-12',
-      stats: 'Clinically Tested'
-    },
-    {
-      id: 2,
-      title: "Natural & Sustainable",
-      description: "We combine the healing power of nature with sustainable practices, using ethically sourced ingredients and eco-friendly packaging.",
-      icon: Heart,
-      position: 'right',
-      offset: 'lg:translate-y-12',
-      stats: 'Eco-Conscious'
-    },
-    {
-      id: 3,
-      title: "Personalized Solutions",
-      description: "Every skin is unique. Our expert-developed routines help you find the perfect combination of products for your specific concerns.",
-      icon: CheckCircle,
-      position: 'left',
-      offset: 'lg:-translate-y-8',
-      stats: 'Tailored Care'
-    }
-  ];
-
-  const benefits = [
-    "Clinically proven ingredients",
-    "Cruelty-free & vegan formulas",
-    "Sustainable packaging",
-    "Dermatologist tested",
-    "Visible results in 4 weeks",
-    "Free from harmful chemicals"
-  ];
-
   const stats = {
     rating: "4.9/5",
     customers: "50K+",
@@ -82,6 +45,7 @@ export default function Home() {
     id: product._id,
     title: product.title || "Premium Skincare",
     subtitle: "Advanced Formula",
+    slug: product.slug?.current || null,
     description: product.description || "Experience the transformative power of our carefully crafted skincare solution.",
     price: product.price ? `$${product.price}` : "$89.00",
     image: product.coverImageUrl || "/api/placeholder/800/1000",
@@ -135,7 +99,6 @@ export default function Home() {
 
   return (
     <main>
-      {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-zinc-50 to-zinc-100 dark:from-zinc-900 dark:to-zinc-800 overflow-hidden">
         <div className="absolute inset-0 opacity-5">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(0,0,0,0.15)_1px,transparent_0)] bg-[length:24px_24px] dark:bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.15)_1px,transparent_0)]" />
@@ -204,7 +167,7 @@ export default function Home() {
                         <div className="grid grid-cols-2 gap-3 mb-8 max-w-md">
                           {product.features.map((feature, index) => (
                             <div key={index} className="flex items-center gap-2">
-                              <TextAnimate animation="blurIn" as="span" className="text-sm text-zinc-300">{`• ${feature}`}</TextAnimate>
+                              <TextAnimate animation="blurIn" as="span" className="text-sm text-zinc-300">{`•  ${feature}`}</TextAnimate>
                             </div>
                           ))}
                         </div>
@@ -214,7 +177,9 @@ export default function Home() {
                           <TextAnimate animation="blurIn" className="text-3xl font-light text-white">
                             {product.price}
                           </TextAnimate>
-                          <TextAnimate as="button" animation="blurIn" className="group cursor-pointer relative bg-white text-zinc-900 px-8 py-4 rounded-full font-medium hover:bg-zinc-100 transition-all duration-300 hover:scale-105">
+                          <TextAnimate as="button" animation="blurIn" className="group cursor-pointer relative bg-white text-zinc-900 px-8 py-4 rounded-full font-medium hover:bg-zinc-100 transition-all duration-300 hover:scale-105" onClick={() => {
+                            router.push(`/products/${product.slug || product.id}`);
+                          }}>
                             {product.cta}
                           </TextAnimate>
                         </div>
@@ -282,8 +247,6 @@ export default function Home() {
           </div>
         </Carousel>
       </section>
-
-      {/* Features Section */}
       <section className="relative py-24 overflow-hidden">
         {/* Background Elements */}
         <div className="absolute top-0 left-0 w-72 h-72 bg-gradient-to-br from-purple-100 to-pink-100 rounded-full blur-3xl opacity-30 dark:from-purple-900/30 dark:to-pink-900/30" />
@@ -494,6 +457,171 @@ export default function Home() {
           </div>
         </div>
       </section>
+       <section className="relative py-24 bg-white dark:bg-zinc-900 overflow-hidden">
+        <div className="container mx-auto px-6 lg:px-8 max-w-7xl">
+          <div className="text-center max-w-3xl mx-auto mb-20">
+            <TextAnimate as="h2" animation="blurInUp" className="text-4xl lg:text-5xl font-light text-zinc-900 dark:text-white mb-6">
+              Potent by Nature
+            </TextAnimate>
+            <TextAnimate as="p" animation="slideUp" delay={0.2} className="text-lg text-zinc-600 dark:text-zinc-400">
+              We harness the power of botanicals and bio-active ingredients, meticulously selected for their proven efficacy and gentle compatibility with your skin.
+            </TextAnimate>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {featuredIngredients.map((ingredient, index) => (
+              <div
+                key={ingredient.name}
+                className="group relative flex flex-col items-center text-center p-8 rounded-3xl bg-gradient-to-br ${ingredient.color} dark:${ingredient.darkColor} border border-zinc-200 dark:border-zinc-700 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2"
+              >
+                {/* Icon */}
+                <div className="p-4 rounded-2xl bg-white dark:bg-zinc-800 shadow-lg mb-6 group-hover:scale-110 transition-transform duration-300">
+                  <ingredient.icon size={32} className="text-zinc-700 dark:text-zinc-300" />
+                </div>
+                {/* Name & Benefit */}
+                <TextAnimate as="h3" animation="slideUp" className="text-xl font-semibold text-zinc-900 dark:text-white mb-2">
+                  {ingredient.name}
+                </TextAnimate>
+                <TextAnimate as="p" animation="slideUp" delay={0.1} className="text-sm font-medium text-accent-foreground mb-4">
+                  {ingredient.benefit}
+                </TextAnimate>
+                {/* Description */}
+                <TextAnimate as="p" animation="slideUp" delay={0.2} className="text-zinc-600 dark:text-zinc-400">
+                  {ingredient.description}
+                </TextAnimate>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* --- NEW: SKINCARE RITUALS SECTION --- */}
+      <section className="relative py-24 bg-zinc-50 dark:bg-zinc-800/20 overflow-hidden">
+        <div className="container mx-auto px-6 lg:px-8 max-w-6xl">
+          <div className="text-center max-w-2xl mx-auto mb-20">
+            <TextAnimate as="h2" animation="blurInUp" className="text-4xl lg:text-5xl font-light text-zinc-900 dark:text-white mb-6">
+              Your Ritual for Radiance
+            </TextAnimate>
+            <TextAnimate as="p" animation="slideUp" delay={0.2} className="text-lg text-zinc-600 dark:text-zinc-400">
+              Transform your daily routine into a moment of self-care. Follow these simple steps to unlock your skin's natural glow.
+            </TextAnimate>
+          </div>
+
+          <div className="relative">
+            {/* Connecting Line */}
+            <div className="absolute left-8 top-16 bottom-16 w-0.5 bg-gradient-to-b from-accent-foreground to-transparent hidden md:block"></div>
+
+            <div className="space-y-12">
+              {skincareRituals.map((ritual, index) => (
+                <div key={ritual.step} className="flex flex-col md:flex-row items-center gap-8 group">
+                  {/* Step Number & Icon */}
+                  <div className="flex-shrink-0 relative">
+                    <div className="w-16 h-16 rounded-2xl bg-accent-foreground flex items-center justify-center text-white font-semibold text-lg relative z-10 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                      {ritual.step}
+                    </div>
+                    <div className="absolute -inset-4 bg-accent-foreground/20 rounded-3xl blur-xl group-hover:opacity-75 transition-opacity duration-300"></div>
+                    <div className="mt-4 text-2xl text-center md:hidden">{ritual.icon}</div>
+                  </div>
+
+                  {/* Content */}
+                  <div className="flex-1 text-center md:text-left bg-white dark:bg-zinc-800/50 p-6 rounded-2xl border border-zinc-200 dark:border-zinc-700 group-hover:shadow-lg transition-shadow duration-300">
+                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                      <div>
+                        <TextAnimate as="h3" animation="slideRight" className="text-xl font-semibold text-zinc-900 dark:text-white mb-2">
+                          {ritual.name}
+                        </TextAnimate>
+                        <TextAnimate as="p" animation="slideRight" delay={0.1} className="text-zinc-600 dark:text-zinc-400 mb-2">
+                          {ritual.description}
+                        </TextAnimate>
+                      </div>
+                      <div className="flex items-center gap-4 justify-center md:justify-start">
+                        <TextAnimate as="span" animation="slideLeft" delay={0.2} className="text-sm font-medium text-accent-foreground flex items-center gap-1">
+                          {ritual.time}
+                        </TextAnimate>
+                        <div className="text-2xl hidden md:block">{ritual.icon}</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* --- NEW: SUSTAINABILITY PROMISE SECTION --- */}
+      <section className="relative py-24 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/10 dark:to-teal-900/10" />
+        <div className="container mx-auto px-6 lg:px-8 max-w-5xl relative z-10">
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <TextAnimate as="h2" animation="blurInUp" className="text-4xl lg:text-5xl font-light text-zinc-900 dark:text-white mb-6">
+              Our Promise to the Planet
+            </TextAnimate>
+            <TextAnimate as="p" animation="slideUp" delay={0.2} className="text-lg text-zinc-600 dark:text-zinc-400">
+              True beauty doesn't cost the earth. We are committed to transparency, ethical sourcing, and sustainable practices at every step.
+            </TextAnimate>
+          </div>
+
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+            {sustainabilityFeatures.map((feature, index) => (
+              <div key={index} className="text-center group">
+                <div className="p-4 rounded-2xl bg-white dark:bg-zinc-800 shadow-lg inline-flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                  <feature.icon size={32} className="text-accent-foreground" />
+                </div>
+                <TextAnimate as="p" animation="fadeIn" delay={0.1 * index} className="font-medium text-zinc-700 dark:text-zinc-300">
+                  {feature.text}
+                </TextAnimate>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* --- NEW: TESTIMONIALS & PRESS SECTION --- */}
+      <section className="relative py-24 bg-zinc-900 dark:bg-black text-white overflow-hidden">
+        <div className="container mx-auto px-6 lg:px-8 max-w-6xl relative z-10">
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <TextAnimate as="h2" animation="blurInUp" className="text-4xl lg:text-5xl font-light text-white mb-6">
+                  Glowing Reviews
+                </TextAnimate>
+                <TextAnimate as="p" animation="slideUp" delay={0.2} className="text-lg text-zinc-300">
+                  Discover what our community has to say about their Bloomora journey.
+                </TextAnimate>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                {testimonials.map((testimonial, index) => (
+                  <div
+                    key={index}
+                    className="group bg-zinc-800/50 backdrop-blur-sm border border-zinc-700 rounded-3xl p-8 hover:bg-zinc-800/70 transition-all duration-500 hover:-translate-y-2"
+                  >
+                    {/* Stars */}
+                    <div className="flex gap-1 mb-4">
+                      {[...Array(5)].map((_, i) => (
+                        <Star key={i} size={20} className="fill-yellow-400 text-yellow-400" />
+                      ))}
+                    </div>
+                    {/* Quote */}
+                    <TextAnimate as="blockquote" animation="slideUp" className="text-zinc-200 italic text-lg mb-6">
+                      {testimonial.quote}
+                    </TextAnimate>
+                    {/* Author */}
+                    <div>
+                      <TextAnimate as="p" animation="slideRight" delay={0.1} className="font-semibold text-white">
+                        {testimonial.author}
+                      </TextAnimate>
+                      <TextAnimate as="p" animation="slideRight" delay={0.2} className="text-sm text-zinc-400">
+                        {testimonial.role}
+                      </TextAnimate>
+                      <TextAnimate as="p" animation="slideRight" delay={0.3} className="text-xs text-accent-foreground mt-1">
+                        {testimonial.skinType}
+                      </TextAnimate>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
     </main>
   );
 }
